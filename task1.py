@@ -1,6 +1,7 @@
 import os
 import re
 import argparse
+from time import perf_counter
 
 
 def read_files_in_path(filenames):
@@ -31,4 +32,9 @@ args = parser.parse_args()
 pattern = re.compile(args.re)
 os.chdir(args.path)
 filenames = os.listdir()
+# Start the stopwatch / counter
+t1_start = perf_counter()
 read_files_in_path(filenames)
+# Stop the stopwatch / counter
+t1_stop = perf_counter()
+print("Elapsed time:", t1_stop, t1_start)
