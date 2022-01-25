@@ -1,5 +1,6 @@
 import os
 import re
+import argparse
 
 
 def read_files_in_path(filenames):
@@ -8,8 +9,9 @@ def read_files_in_path(filenames):
         try:
             for i, line in enumerate(open(filename)):
                 for match in re.finditer(pattern, line):
-                #print('Found on line %s: %s' % (i+1, match.group()))
-                    print(f'File name: {filename}, Found on line {i+1}: {match.group()}')
+                    #print('Found on line %s: %s' % (i+1, match.group()))
+                    print(
+                        f'File name: {filename}, Found on line {i+1}: {match.group()}')
         except IsADirectoryError as e:
             pass
 
@@ -22,9 +24,11 @@ def read_files_in_path(filenames):
         read_files_in_path(second_half)
 
 
-input_path = r'/Users/danielsilva/Documents/Onboarding/Python Scripting'
-pattern = re.compile('[0-9]+')
-os.chdir(input_path)
+parser = argparse.ArgumentParser()
+parser.add_argument("path", help="Path where looking into content files.")
+parser.add_argument("re", help="Regex Patter to match into content files.")
+args = parser.parse_args()
+pattern = re.compile(args.re)
+os.chdir(args.path)
 filenames = os.listdir()
-print(filenames)
 read_files_in_path(filenames)
