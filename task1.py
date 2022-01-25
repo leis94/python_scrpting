@@ -1,15 +1,39 @@
 import os
-
-def read_files_in_path(path):
-    os.chdir(path)
-
-    filenames = os.listdir()
-
-    return filenames
+import re
+import argparse
+from time import perf_counter
 
 
-input_path = r'/Users/danielsilva/Documents/Onboarding/Python Scripting'
-result = read_files_in_path(input_path)
+def read_files_in_path(filenames):
+    if len(filenames) == 1:
+        filename = filenames[0]
+        try:
+            for i, line in enumerate(open(filename)):
+                for match in re.finditer(pattern, line):
+                    print(
+                        f'File name: {filename}, Found on line {i+1}: {match.group()}')
+        except IsADirectoryError as e:
+            pass
 
-print(type(result))
-print(result)
+    else:
+        mid = len(filenames) // 2
+        first_half = filenames[:mid]
+        second_half = filenames[mid:]
+
+        read_files_in_path(first_half)
+        read_files_in_path(second_half)
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("re", help="Regex Patter to match into content files.")
+parser.add_argument("path", help="Path where looking into content files.")
+args = parser.parse_args()
+pattern = re.compile(args.re)
+os.chdir(args.path)
+filenames = os.listdir()
+# Start the stopwatch / counter
+t1_start = perf_counter()
+read_files_in_path(filenames)
+# Stop the stopwatch / counter
+t1_stop = perf_counter()
+print("Elapsed time:", t1_stop, t1_start)
